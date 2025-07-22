@@ -14,9 +14,10 @@ class CategorizeTransactionUseCase @Inject constructor(
     
     override suspend fun execute(parameters: Params): CategorizeTransactionResult {
         return try {
-            // Validate category
-            if (!CategoryValidator.isValidColorFormat(parameters.category)) {
-                return CategorizeTransactionResult.Error("Invalid category: ${parameters.category}")
+            // Validate category name
+            val categoryValidation = CategoryValidator.validateCategoryName(parameters.category)
+            if (!categoryValidation.isValid) {
+                return CategorizeTransactionResult.Error("Invalid category: ${categoryValidation.errors.joinToString()}")
             }
             
             when (parameters.type) {

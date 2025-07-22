@@ -29,17 +29,7 @@ class TransactionListViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             try {
-                // For now, use test data to verify UI works
-                // TODO: Replace with real data from use case
-                val testTransactions = TestDataHelper.createSampleTransactions()
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    transactions = testTransactions,
-                    error = null
-                )
-                
-                // Uncomment this when ready to use real data:
-                /*
+                // Use real data from repository
                 getTransactionsUseCase(GetTransactionsUseCase.Params.all())
                     .catch { exception ->
                         _uiState.value = _uiState.value.copy(
@@ -48,13 +38,19 @@ class TransactionListViewModel @Inject constructor(
                         )
                     }
                     .collect { transactions ->
+                        // If no real transactions exist, show test data for demo
+                        val displayTransactions = if (transactions.isEmpty()) {
+                            TestDataHelper.createSampleTransactions()
+                        } else {
+                            transactions
+                        }
+                        
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            transactions = transactions,
+                            transactions = displayTransactions,
                             error = null
                         )
                     }
-                */
             } catch (exception: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,

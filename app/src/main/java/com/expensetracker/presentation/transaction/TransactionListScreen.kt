@@ -21,6 +21,7 @@ import java.util.*
 @Composable
 fun TransactionListScreen(
     onTransactionClick: (Transaction) -> Unit,
+    onBackPressed: (() -> Unit)? = null,
     viewModel: TransactionListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -30,7 +31,14 @@ fun TransactionListScreen(
     ) {
         // Simple top bar
         TopAppBar(
-            title = { Text("Transactions") }
+            title = { Text("Transactions") },
+            navigationIcon = {
+                if (onBackPressed != null) {
+                    TextButton(onClick = onBackPressed) {
+                        Text("← Dashboard")
+                    }
+                }
+            }
         )
         
         when {
